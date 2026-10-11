@@ -8,6 +8,7 @@ class Settings(BaseSettings):
     
     # OpenAI / LLM
     OPENAI_API_KEY: str
+    NVIDIA_API_KEY: str
     
     # Google OAuth
     GOOGLE_CLIENT_ID: str = ""

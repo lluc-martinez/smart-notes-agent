@@ -34,3 +34,21 @@ class ConversationHistory(SQLModel, table=True):
     timestamp: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
     
     user: User = Relationship(back_populates="messages")
+
+class Note(SQLModel, table=True):
+    __tablename__ = "notes"
+    
+    id: Optional[int] = Field(default=None, primary_key=True)
+    user_id: int = Field(foreign_key="users.id", index=True)
+    content: str
+    tags: str = Field(default="")
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
+class ShoppingItem(SQLModel, table=True):
+    __tablename__ = "shopping_items"
+    
+    id: Optional[int] = Field(default=None, primary_key=True)
+    user_id: int = Field(foreign_key="users.id", index=True)
+    item_name: str
+    is_bought: bool = Field(default=False)
+    added_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))

@@ -8,6 +8,8 @@ from app.db.session import engine
 # Important: Import all models here so SQLModel registers them before creating tables
 from app.models import db_models 
 
+from app.api.endpoints import webhook
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     """
@@ -31,3 +33,5 @@ def health_check():
     Simple endpoint to verify the API is running.
     """
     return {"status": "ok", "project": settings.PROJECT_NAME}
+
+app.include_router(webhook.router, prefix="/api/v1", tags=["Telegram"])
