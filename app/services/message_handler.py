@@ -2,7 +2,7 @@ import logging
 from app.schemas.telegram_schemas import TelegramUpdate
 from app.services.llm_router import analyze_intent
 from app.services.telegram_client import send_telegram_message
-from app.services.db_service import execute_action
+from app.services.db_service import execute_action, get_shopping_list
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -21,6 +21,12 @@ async def process_telegram_update(update: TelegramUpdate) -> None:
 
     if update.message.text:
         user_text = update.message.text
+
+        if user_text.startswith("/llista"):
+            llista_text = get_shopping_list(chat_id)
+            await send_telegram_message(chat_id, llista_text)
+            return
+
         logger.info(f"Received text from {user_name}: {user_text}")
         
         try:

@@ -42,3 +42,27 @@ def execute_action(router_output: RouterOutput, telegram_id: int, username: str)
             session.commit()
         
         # Calendar functionality will be added in a future phase
+def get_shopping_list(telegram_id: int) -> str:
+    """Recupera la llista de la compra activa de l'usuari."""
+    with Session(engine) as session:
+        statement_user = select(User).where(User.telegram_id == telegram_id)
+        user = session.exec(statement_user).first()
+        
+        if not user:
+            return "No tens cap usuari registrat. Envia'm un missatge normal primer."
+        
+        statement_items = select(ShoppingItem).where(
+            ShoppingItem.user_id == user.id,
+            ShoppingItem.is_bought == False
+        )
+        items = session.exec(statement_items).all()
+        
+        if not items:
+            return "🛒 La teva llista de la compra està buida."
+        
+        # El nostre client de Telegram està configurat amb parse_mode="HTML"
+        text = "🛒 <b>Llista de la compra:</b>\n\n"
+        for item in items:
+            text += f"• {item.item_name}\n"
+        
+        return text
