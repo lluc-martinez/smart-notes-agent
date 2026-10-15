@@ -1,0 +1,15 @@
+version: '3.8'
+
+services:
+  smart-notes-bot:
+    build: .
+    container_name: smart_notes_agent
+    restart: unless-stopped  # If the server crashes or restarts, the bot will start again automatically
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env  # Automatically loads your API keys
+    volumes:
+      # THIS LINE IS CRITICAL: Connects the "data" folder on your PC to the container's folder.
+      # This ensures that smart_notes.db is never deleted, even if you destroy the container.
+      - ./data:/app/data

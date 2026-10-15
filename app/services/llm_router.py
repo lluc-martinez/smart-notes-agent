@@ -54,3 +54,34 @@ async def analyze_intent(text: str) -> RouterOutput:
 
     parsed_dict = json.loads(raw_json)
     return RouterOutput(**parsed_dict)
+
+async def generate_natural_response(user_input: str, db_context: str) -> str:
+    """
+    Takes the raw data from the database and uses the LLM to formulate 
+    a natural, friendly response answering the user's query.
+    """
+    system_prompt = f"""
+    You are a helpful personal assistant. The user has asked a question about their saved data.
+    
+    Here is the raw data retrieved from their database:
+    ---
+    {db_context}
+    ---
+    
+    Your task:
+    1. Answer the user's question using ONLY the provided data.
+    2. Write in a natural, conversational and friendly tone.
+    3. Respond in the same language the user used.
+    4. Do not mention "the database", "JSON", or "the provided data". Just act like you remember it.
+    """
+
+    response = await client.chat.completions.create(
+        model="openai/gpt-oss-20b",
+        messages=[
+            {"role": "system", "content": system_prompt},
+            {"role": "user", "content": user_input}
+        ],
+        temperature=0.3  # Slightly higher for more natural language generation
+    )
+    
+    return response.choices[0].message.content

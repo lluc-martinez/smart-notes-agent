@@ -5,10 +5,13 @@ class Settings(BaseSettings):
     
     # Telegram
     TELEGRAM_BOT_TOKEN: str
+    TELEGRAM_SECRET_TOKEN: str
+    ALLOWED_USER_ID: int
     
     # OpenAI / LLM
     OPENAI_API_KEY: str
     NVIDIA_API_KEY: str
+    GROQ_API_KEY: str
     
     # Google OAuth
     GOOGLE_CLIENT_ID: str = ""
